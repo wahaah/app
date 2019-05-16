@@ -31,7 +31,24 @@
     <script src="js/ruler1.js"></script>
     <!-- <script src="js/in01.js"></script> -->
     <script src="assets/js/jquery-1.8.3.min.js"></script>
-
+    <style>   
+        .upload-input {
+            position: relative;
+            display: inline-block;
+            padding: 4px;
+            overflow: hidden;
+            text-decoration: none;
+            text-indent: 0;
+            
+        }
+        input[type="file"] {
+                position: absolute;
+                color: transparent;
+                right: 0;
+                top: 0;
+                opacity: 0;
+            }
+    </style>
     <style>
         .page .page-main{
             padding: 10px 0;
@@ -312,12 +329,57 @@
                     <p>产检报告最终会被医院收走，建议您拍照保存哦~~</p>
                 </div>
             </div>
+            <!-- <div id="picture" class="mui-popover mui-popover-action ">
+                <ul class="mui-table-view imgmess">
+                    <li  class="mui-table-view-cell pics">
+                        <a href="#picture"><b>从相册选择</b></a>
+                    </li>
+                </ul>
+                <ul class="mui-table-view">
+                    <li class="mui-table-view-cell">
+                        <a href="#picture"><b>取消</b></a>
+                    </li>
+                </ul>
+            </div> -->
+            <div id="picture" class="mui-popover mui-popover-action ">
+                <ul class="mui-table-view imgmess">
+                    <li  class="mui-table-view-cell pics">
+                      <a href="javascript:;" class="upload-input">拍照上传
+                        <input type="file" id="my_img" accept="image/*" />
+                      </a> 
+                        
+                    </li>
+                </ul>
+                <ul class="mui-table-view">
+                    <li class="mui-table-view-cell">
+                        <a href="#picture"><b>取消</b></a>
+                    </li>
+                </ul>
+            </div>
+            <p id="info"></p>
+        </div>
+
+
+
+
+<!-- 
+        <div class="mui-content-padded">
+            <div class="photobox">
+                <h4><span class="mui-icon mui-icon-download"></span> 产检报告备份</h4>
+                <div class="pink">
+                    <span class="mui-icon mui-icon-camera" style="fontSize:100px"></span>
+                    <a href="#picture" class="mui-btn mui-btn-primary mui-btn-block mui-btn-outlined" style="padding: 5px 10px;">
+                        上传产检报告
+                    </a>
+                    <p>产检报告最终会被医院收走，建议您拍照保存哦~~</p>
+                </div>
+            </div>
 
 
             <div id="picture" class="mui-popover mui-popover-action ">
                 <ul class="mui-table-view">
-                    <li class="mui-table-view-cell">
-                        <a href="#">拍照或录像</a>
+                    <li class="mui-table-view-cell" id="btn">
+                        <a href="#" >拍照或录像</a>
                     </li>
                     <li class="mui-table-view-cell">
                         <a href="#">从相册中选择</a>
@@ -330,13 +392,90 @@
                 </ul>
             </div>
             <p id="info"></p>
-        </div>
+        </div> -->
 
     </div>
 
 
 
 </body>
+<script>
+    // getPhoto();
+    // 文件上传不用click 一般用change
+    $(function(){
+        $("#my_img").on("change",function(){
+            // console.log(112);
+            var ctime = moment().format("YYYY-MM-DD hh:mm:ss");
+    // ------------------------------------------------------------------------------
+           /*  // 拿取图片的路径  方法1
+            var imgurl = $("#my_img").val();
+            console.log(imgurl);//C:\fakepath\20150506094242_U2Fyj.jpeg
+            var url = imgurl.substr(12);
+            console.log(url);//20150506094242_U2Fyj.jpeg
+            var img = "img/"+url;
+            console.log(img);
+            
+           
+            // 拿取图片的路径  
+            // var img = join("img/",imgurl);
+            // console.log(img);
+           
+            $.ajax({
+                url:"api/_uploadfile.php",
+                type:"post",
+                data:{
+                    ctime:ctime,
+                    img:img,
+                },
+                // 需要配置两个参数，设置jquery才能把文件带回服务器
+                // contentType:false,//只有设置这个参数，jquery才能把文件带回服务器
+                // processData:false,//告诉jq不要序列化我们的参数
+                success:function(res){
+                    if(res.code == 1){
+                     getPhoto();
+                    //  savephoto();
+                 }
+
+                },
+            }); */
+            // ----------------------------------------------------------------------------------
+            //拿取图片的路径 方法2
+
+            var file = this.files[0];
+            // console.log(file);
+            // jquery是无法直接把文件上传的，需要formdata配合上传
+            var data = new FormData();
+            // data.append("键","值")
+            data.append("file",file);
+            data.append("ctime",ctime);
+            $.ajax({
+                url:"api/_uploadfile.php",
+                type:"post",
+                data: data,
+                // 需要配置两个参数，设置jquery才能把文件带回服务器
+                contentType:false,//只有设置这个参数，jquery才能把文件带回服务器
+                processData:false,//告诉jq不要序列化我们的参数
+                success:function(res){
+                    if(res.code == 1){
+                    //  getPhoto();
+                    }
+                }
+            });
+        });
+    });
+</script>
+<script>
+    // var btn = document.getElementById('btn');
+    // btn.onclick = function () {
+    //     navigator.mediaDevices.getUserMedia({
+    //         video:true,
+    //         audio:false
+    //     }).then(function (strem) {
+    //         v.srcObject = strem;
+    //         v.play();
+    //     });
+    // };
+</script>
 <script>
     (function ($) {
         $.init();
@@ -380,5 +519,6 @@
         });
     })(mui);
 </script>
+
 
 </html>
